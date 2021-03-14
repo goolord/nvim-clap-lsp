@@ -4,18 +4,24 @@ local code_action_cache = {}
 
 function preview(action)
     local res = {}
-    if action.edit ~= nil then
+    local function render_preview(lines)
+        vim.fn['clap#preview#show_lines'](lines, 'txt', -1)
+    end
+
+    if action.edit ~= nil and action.edit.changes ~= nil then
         for file, x in pairs(action.edit.changes) do
             table.insert(res,tostring(file))
             for _, line in pairs(x) do
                 table.insert(res,line.newText)
             end
         end
+        render_preview(res)
     end
+
     if action.command ~= nil then
         -- todo?
     end
-    return res
+
 end
 
 local function get_index(input)
@@ -26,8 +32,7 @@ local function on_move_impl()
     vim.cmd('let g:clap_lsp_curline = g:clap.display.getcurline()')
     local curline = vim.api.nvim_get_var('clap_lsp_curline')
     local index = get_index(curline)
-    local lines = preview(code_action_cache[index])
-    vim.fn['clap#preview#show_lines'](lines, 'txt', -1)
+    preview(code_action_cache[index])
 end
 
 -- codeAction event callback handler
