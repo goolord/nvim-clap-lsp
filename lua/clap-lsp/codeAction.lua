@@ -15,12 +15,13 @@ function preview(action)
                 table.insert(res,line.newText)
             end
         end
-        render_preview(res)
     end
 
     if action.command ~= nil then
         -- todo?
     end
+
+    if #res ~= 0 then render_preview(res) end
 
 end
 
