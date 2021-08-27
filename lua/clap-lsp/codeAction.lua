@@ -46,7 +46,6 @@ local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandle
     local data = {}
     for i, action in ipairs (actions) do
         table.insert(code_action_cache, i, action)
-        local foo = ''
         local title = action.title:gsub('\r\n', '\\r\\n')
         title = title:gsub('\n','\\n')
         data[i] = i .. ': ' .. title
