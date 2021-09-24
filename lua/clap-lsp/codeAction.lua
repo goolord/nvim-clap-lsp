@@ -18,6 +18,7 @@ local function preview(action)
     end
 
     if action.command ~= nil then
+        print('action.command ~= nil\n', vim.inspect(action.command))
         -- todo?
     end
 
@@ -58,7 +59,7 @@ local code_action_handler = function(_, actions, _, _, _)
     end
     local data = {}
     for i, action in ipairs (actions) do
-        table.insert(code_action_cache, i, action)
+        code_action_cache[i] = action
         local title = action.title:gsub('\r\n', '\\r\\n')
         title = title:gsub('\n','\\n')
         data[i] = i .. ': ' .. title
