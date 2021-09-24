@@ -73,6 +73,7 @@ local code_action_handler = function(_, actions, _, _, _)
     }
     vim.fn['clap#run'](provider)
     on_move_impl()
+    vim.api.nvim_input('<ESC>')
 end
 
 return {

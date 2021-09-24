@@ -1,5 +1,3 @@
-local util = require'clap-lsp.util'
-
 local function to_fp(selected)
     return string.match(selected, ".* - (.*):(%d*)")
 end
