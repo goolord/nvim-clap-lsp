@@ -25,12 +25,13 @@ local function definition_handler(_, locations, _, _)
             -- local filename = vim.api.nvim_buf_get_name(bufnr)
             local items = vim.lsp.util.locations_to_items(locations)
             for i, item in ipairs(items) do
+                local text = item.text
+                text = text:gsub("\n", "\\n")
+                text = text:gsub("^%s+", "")
+                text = text:gsub("%s+$", "")
                 data[i] = item.text
-                local add = vim.fn.fnamemodify(item.filename, ':~:.')
-                data[i] = data[i] .. ' - ' .. add .. ':' .. item.lnum
-                data[i] = data[i]:gsub("\n", "")
-                data[i] = data[i]:gsub("^%s+", "")
-                data[i] = data[i]:gsub("%s+$", "")
+                local fn = vim.fn.fnamemodify(item.filename, ':~:.')
+                data[i] = data[i] .. ' - ' .. fn .. ':' .. item.lnum
                 item.text = nil
             end
             local provider = {
@@ -59,12 +60,13 @@ local function references_handler(_, locations, _, _)
     -- local filename = vim.api.nvim_buf_get_name(bufnr)
     local items = vim.lsp.util.locations_to_items(locations)
     for i, item in ipairs(items) do
-        data[i] = item.text
-        local add = vim.fn.fnamemodify(item.filename, ':~:.')
-        data[i] = data[i] .. ' - ' .. add .. ':' .. item.lnum
-        data[i] = data[i]:gsub("\n", "")
-        data[i] = data[i]:gsub("^%s+", "")
-        data[i] = data[i]:gsub("%s+$", "")
+        local text = item.text
+        text = text:gsub("\n", "\\n")
+        text = text:gsub("^%s+", "")
+        text = text:gsub("%s+$", "")
+        data[i] = text
+        local fn = vim.fn.fnamemodify(item.filename, ':~:.')
+        data[i] = data[i] .. ' - ' .. fn .. ':' .. item.lnum
         items.text = nil
     end
 

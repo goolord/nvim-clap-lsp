@@ -20,10 +20,11 @@ local function symbol_handler(_, result, ctx, _)
     local items = vim.lsp.util.symbols_to_items(result, bufnr)
     local data = {}
     for i, item in ipairs(items) do
-        data[i] = item.text
+        local text = item.text
+        text = text:gsub("\n", "\\n")
+        data[i] = text
         local add = vim.fn.fnamemodify(item.filename, ':~:.')
-        data[i] = data[i]..' - ' .. add .. ':' ..item.lnum
-        data[i] = data[i]:gsub("\n", "")
+        data[i] = data[i] .. ' - ' .. add .. ':' .. item.lnum
         item.text = nil
     end
     local provider = {

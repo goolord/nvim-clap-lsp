@@ -1,5 +1,3 @@
--- local inspect = require('inspect')
-
 local code_action_cache = {}
 
 local function preview(action)
@@ -63,7 +61,6 @@ local code_action_handler = function(_, actions, _, _, _)
         local title = action.title:gsub('\r\n', '\\r\\n')
         title = title:gsub('\n','\\n')
         data[i] = i .. ': ' .. title
-        data[i] = data[i]:gsub("\n", "")
     end
     local provider = {
         source = data,
