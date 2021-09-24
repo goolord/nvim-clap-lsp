@@ -17,19 +17,19 @@ local function references_sink(selected)
 end
 
 -- callback for lsp definition, implementation and declaration handler
-local definition_handler = function(_,_,locations, _, bufnr)
+local function definition_handler(_, locations, _, _)
+    -- local bufnr = ctx.bufnr
     if locations == nil or vim.tbl_isempty(locations) then
         return
     end
     if vim.tbl_islist(locations) then
         if #locations > 1 then
             local data = {}
-            local filename = vim.api.nvim_buf_get_name(bufnr)
-            items = vim.lsp.util.locations_to_items(locations)
-            local cwd = vim.fn.getcwd(0)..'/'
-            for i, item in pairs(items) do
+            -- local filename = vim.api.nvim_buf_get_name(bufnr)
+            local items = vim.lsp.util.locations_to_items(locations)
+            for i, item in ipairs(items) do
                 data[i] = item.text
-                local add = util.get_relative_path(cwd, item.filename)
+                local add = vim.fn.fnamemodify(item.filename, ':~:.')
                 data[i] = data[i] .. ' - ' .. add
                 data[i] = data[i]:gsub("\n", "")
                 item.text = nil
@@ -47,18 +47,18 @@ local definition_handler = function(_,_,locations, _, bufnr)
     end
 end
 
-local function references_handler(_, _, locations,_,bufnr)
+local function references_handler(_, locations, _, _)
+    -- local bufnr = ctx.bufnr
     if locations == nil or vim.tbl_isempty(locations) then
         print "No references found"
         return
     end
     local data = {}
-    local filename = vim.api.nvim_buf_get_name(bufnr)
-    items = vim.lsp.util.locations_to_items(locations)
-    local cwd = vim.fn.getcwd(0)..'/'
-    for i, item in pairs(items) do
+    -- local filename = vim.api.nvim_buf_get_name(bufnr)
+    local items = vim.lsp.util.locations_to_items(locations)
+    for i, item in ipairs(items) do
         data[i] = item.text
-        local add = util.get_relative_path(cwd, item.filename)
+        local add = vim.fn.fnamemodify(item.filename, ':~:.')
         data[i] = data[i] .. ' - ' .. add .. ':' .. item.lnum
         data[i] = data[i]:gsub("\n", "")
         data[i] = data[i]:gsub("^%s+", "")

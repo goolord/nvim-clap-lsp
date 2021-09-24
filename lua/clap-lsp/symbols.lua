@@ -16,15 +16,15 @@ local function on_move_impl()
     vim.fn['clap#preview#file_at'](curfp,lnum)
 end
 
-local function symbol_handler(_, _, result, _, bufnr)
+local function symbol_handler(_, result, ctx, _)
+    local bufnr = ctx.bufnr
     if not result or vim.tbl_isempty(result) then return end
-    local filename = vim.api.nvim_buf_get_name(bufnr)
-    items = vim.lsp.util.symbols_to_items(result, bufnr)
+    -- local filename = vim.api.nvim_buf_get_name(bufnr)
+    local items = vim.lsp.util.symbols_to_items(result, bufnr)
     local data = {}
-    local cwd = vim.fn.getcwd(0)..'/'
-    for i, item in pairs(items) do
+    for i, item in ipairs(items) do
         data[i] = item.text
-        local add = util.get_relative_path(cwd, item.filename)
+        local add = vim.fn.fnamemodify(item.filename, ':~:.')
         data[i] = data[i]..' - ' .. add .. ':' ..item.lnum
         data[i] = data[i]:gsub("\n", "")
         item.text = nil
