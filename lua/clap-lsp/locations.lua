@@ -3,13 +3,12 @@ local function to_fp(selected)
 end
 
 local function on_move_impl()
-    vim.cmd('let g:clap_lsp_curline = g:clap.display.getcurline()')
-    local curline = vim.api.nvim_get_var('clap_lsp_curline')
+    local curline = vim.api.nvim_call_dict_function('g:clap.display' , 'getcurline', {})
     local curfp,lnum = to_fp(curline)
     vim.fn['clap#preview#file_at'](curfp,lnum)
 end
 
-local function references_sink(selected)
+local function locations_sink(selected)
     local fp,lnum = to_fp(selected)
     vim.cmd('edit +' .. lnum .. ' ' .. fp)
 end
@@ -28,15 +27,20 @@ local function definition_handler(_, locations, _, _)
             for i, item in ipairs(items) do
                 data[i] = item.text
                 local add = vim.fn.fnamemodify(item.filename, ':~:.')
-                data[i] = data[i] .. ' - ' .. add
+                data[i] = data[i] .. ' - ' .. add .. ':' .. item.lnum
                 data[i] = data[i]:gsub("\n", "")
+                data[i] = data[i]:gsub("^%s+", "")
+                data[i] = data[i]:gsub("%s+$", "")
                 item.text = nil
             end
             local provider = {
                 source = data,
-                sink = 'e',
+                sink = locations_sink,
+                on_move = on_move_impl,
+                syntax = 'clap-lsp-locations'
             }
             vim.fn['clap#run'](provider)
+            on_move_impl()
         else
             vim.lsp.util.jump_to_location(locations[1])
         end
@@ -66,7 +70,7 @@ local function references_handler(_, locations, _, _)
 
     local provider = {
         source = data,
-        sink = references_sink,
+        sink = locations_sink,
         on_move = on_move_impl,
         syntax = 'clap-lsp-locations'
     }

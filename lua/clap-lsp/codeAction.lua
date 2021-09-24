@@ -29,8 +29,7 @@ local function get_index(input)
 end
 
 local function on_move_impl()
-    vim.cmd('let g:clap_lsp_curline = g:clap.display.getcurline()')
-    local curline = vim.api.nvim_get_var('clap_lsp_curline')
+    local curline = vim.api.nvim_call_dict_function('g:clap.display' , 'getcurline', {})
     local index = get_index(curline)
     preview(code_action_cache[index])
 end
