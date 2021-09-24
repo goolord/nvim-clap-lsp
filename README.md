@@ -18,4 +18,7 @@ if you don't want to input a query for the workspace_symbol handler, you may cre
 ```
 
 ## screenshots
-![img](./screenshots/workspace_symbol.png "screenshot of the workspace/symbol handler")
+![image](https://user-images.githubusercontent.com/24906808/134748297-4b193cc4-e0ea-4e29-972e-344ff67598b7.png "screenshot of the symbol handler")
+![image](https://user-images.githubusercontent.com/24906808/134748377-03a02aa8-e4ca-466a-b192-e75a2d5f5f19.png)
+
+
