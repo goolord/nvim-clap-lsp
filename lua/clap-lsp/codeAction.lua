@@ -1,4 +1,5 @@
 local code_action_cache = {}
+local ctx
 
 local function preview(action)
     local res = {}
@@ -38,21 +39,24 @@ end
 local function codeaction_sink(selected)
     local index = get_index(selected)
     local action = code_action_cache[index]
-    if action.edit or type(action.command) == "table" then
-        if action.edit then
-            vim.lsp.util.apply_workspace_edit(action.edit)
-        end
-        if type(action.command) == "table" then
+    if action.edit then
+        vim.lsp.util.apply_workspace_edit(action.edit)
+    end
+    if action.command then
+        local command = type(action.command) == 'table' and action.command or action
+        local fn = vim.lsp.commands[command.command]
+        if fn then
+            fn(command, ctx)
+        else
             vim.lsp.buf.execute_command(action.command)
         end
-    else
-        vim.lsp.buf.execute_command(action)
     end
 end
 
 -- codeAction event callback handler
 -- use customSelectionHandler for defining custom way to handle selection
-local code_action_handler = function(_, actions, _, _, _)
+local code_action_handler = function(_, actions, ctx_l, _, _)
+    ctx = ctx_l
     if actions == nil or vim.tbl_isempty(actions) then
         print("No code actions available")
         return
