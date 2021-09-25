@@ -2,12 +2,14 @@ local code_action_cache = {}
 
 local function preview(action)
     local res = {}
-    local function render_preview(lines)
-        vim.fn['clap#preview#show_lines'](lines, 'txt', -1)
+    local syntax
+    local function render_preview(lines, hl_syn)
+        vim.fn['clap#preview#show_lines'](lines, hl_syn, -1)
+        vim.fn['clap#preview#highlight_header']()
     end
-
     if action.edit ~= nil and action.edit.changes ~= nil then
-        for file, x in ipairs(action.edit.changes) do
+        for file, x in pairs(action.edit.changes) do
+            syntax = vim.fn['clap#ext#into_filetype'](tostring(file))
             table.insert(res,tostring(file))
             for _, line in ipairs(x) do
                 table.insert(res,line.newText)
@@ -20,7 +22,7 @@ local function preview(action)
         -- todo?
     end
 
-    if #res ~= 0 then render_preview(res) end
+    if #res ~= 0 then render_preview(res, syntax or 'txt') end
 end
 
 local function get_index(input)
@@ -60,6 +62,7 @@ local code_action_handler = function(_, actions, _, _, _)
         code_action_cache[i] = action
         local title = action.title:gsub('\r\n', '\\r\\n')
         title = title:gsub('\n','\\n')
+        title = title:gsub(string.char(0),'')
         data[i] = i .. ': ' .. title
     end
     local provider = {
