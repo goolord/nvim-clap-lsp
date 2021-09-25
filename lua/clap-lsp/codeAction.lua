@@ -66,10 +66,10 @@ local code_action_handler = function(_, actions, _, _, _)
         source = data,
         sink = codeaction_sink,
         on_move = on_move_impl,
+        on_enter = on_move_impl,
         -- syntax = 'clap-lsp-symbol'
     }
     vim.fn['clap#run'](provider)
-    on_move_impl()
     vim.api.nvim_input('<ESC>')
 end
 

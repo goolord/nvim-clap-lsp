@@ -31,10 +31,11 @@ local function symbol_handler(_, result, ctx, _)
         source = data,
         sink = symbol_sink,
         on_move = on_move_impl,
+        on_enter = on_move_impl,
+        support_open_actoin = true,
         syntax = 'clap-lsp-symbol'
     }
     vim.fn['clap#run'](provider)
-    on_move_impl()
 end
 
 return {

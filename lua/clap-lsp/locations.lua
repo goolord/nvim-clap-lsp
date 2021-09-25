@@ -38,6 +38,7 @@ local function definition_handler(_, locations, _, _)
                 source = data,
                 sink = locations_sink,
                 on_move = on_move_impl,
+                support_open_actoin = true,
                 syntax = 'clap-lsp-locations'
             }
             vim.fn['clap#run'](provider)
@@ -74,10 +75,11 @@ local function references_handler(_, locations, _, _)
         source = data,
         sink = locations_sink,
         on_move = on_move_impl,
+        on_enter = on_move_impl,
+        support_open_actoin = true,
         syntax = 'clap-lsp-locations'
     }
     vim.fn['clap#run'](provider)
-    on_move_impl()
 end
 
 return {
